@@ -1,0 +1,52 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}Movies from {{ year.year }}{% endblock %}
+
+{% block title2 %}Movies from {{ year.year }}{% endblock %}
+
+
+
+{% block main %}
+
+{% if object_list %}
+<div>
+    {% for movie in object_list %}
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <div>
+                    <img src="{{movie.poster.url}}" />
+                </div>
+                <div>
+                    <a href="{{ movie.get_absolute_url }}" class="text-decoration-none">{{ movie.title }} </a>
+                </div>
+                (Rating:<span class="text-warning"><i class="fa-solid fa-star"></i></span> {{ movie.rating }})
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="ratio ratio-16x9">
+                {% video movie.trailer '800x600' %}
+            </div>
+        </div>
+        <div>
+            <h2>Actors:</h2>
+            {% for actor in movie.actors.all %}
+                <a href="{{actor.get_absolute_url}}" class="text-decoration-none">{{actor}}</a>
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Directors:</h2>
+            <a href="{{movie.director.get_absolute_url}}" class="text-decoration-none">{{movie.director}}</a>
+        </div>
+        <hr>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No movies found for this year.</p>
+{% endif %}
+
+
+{% endblock %}

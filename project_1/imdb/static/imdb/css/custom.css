@@ -1,0 +1,46 @@
+.watchlist-item {
+    position: relative;
+}
+
+
+.watchlist-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background: url(../imgs/star.png);
+    background-size: 100%;
+}
+
+.favourite-actor-item {
+    position: relative;
+}
+
+
+.favourite-actor-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background: url(../imgs/favourite.png);
+    background-size: 100%;
+}
+.favourite-director-item {
+    position: relative;
+}
+
+
+.favourite-director-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background: url(../imgs/favourite.png);
+    background-size: 100%;
+}

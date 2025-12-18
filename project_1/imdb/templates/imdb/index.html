@@ -1,0 +1,89 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Imdb (movies and personalities){% endblock %}
+
+{% block title2 %}Imdb (movies and personalities){% endblock %}
+
+{% block main %}
+<h3>Best male actors: </h3>
+<div class="row">
+    {% for top_actor in top_actors_male %}
+    <div class="col-2 text-center {% if user in top_actor.actors_by_user.all %}favourite-actor-item {% endif %}">
+        <img src="{{top_actor.photo.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{top_actor.get_absolute_url}}">{{top_actor}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{top_actor.avg_rating|floatformat:1 }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+<br>
+<h3>Best female actors: </h3>
+<div class="row">
+    {% for top_actor in top_actors_female %}
+    <div class="col-2 text-center {% if user in top_actor.actors_by_user.all %}favourite-actor-item {% endif %}">
+        <img src="{{top_actor.photo.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{top_actor.get_absolute_url}}">{{top_actor}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{top_actor.avg_rating|floatformat:1 }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'imdb:filter-actor-list' %}" class="text-decoration-none">Actors filter</a>
+<br>
+<a href="{% url 'imdb:actor-list' %}" class="text-decoration-none">Full actors list</a>
+<hr>
+<h3>Best films:</h3>
+<div class="row">
+    {% for top_movie in top_movies %}
+    <div class="col-2 text-center {% if user in top_movie.users_to_watch.all %} watchlist-item {% endif %}">
+        <img src="{{top_movie.poster.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{top_movie.get_absolute_url}}">{{top_movie}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{top_movie.rating}}</p>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'imdb:movie-list' %}" class="text-decoration-none">Full movies list</a>
+<!-- <a href="{% url 'imdb:movie-year-archive' year=1979 %}" class="text-decoration-none">Movies by year</a> -->
+<br>
+<a href="{% url 'imdb:filter-movie-list' %}" class="text-decoration-none">Filters</a>
+<p>Movies by year:</p>
+<div style="display: flex; gap: 10px;">
+    {% for item in all_years %}
+    <a href="{% url 'imdb:movie-year-archive' year=item.year %}" style="text-decoration: none;">
+        <p>{{ item.year}} ({{item.num}})</p>
+    </a>
+    {% endfor %}
+</div>
+{% if user.is_authenticated and user.watchlist.exists %}
+<h3>Watchlist of {{user.get_full_name}}:</h3>
+<div class="row">
+    {% for top_movie in user.watchlist.all %}
+    <div class="col-2 text-center watchlist-item">
+        <img src="{{top_movie.poster.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{top_movie.get_absolute_url}}">{{top_movie}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{top_movie.rating}}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% if user.is_authenticated %}
+{% if user.lists.exists %}
+<a href="{% url 'imdb:user-movie-lists' %}" class="fs-3 text-decoration-none">{{user.get_full_name}} personal lists ({{user.lists.count}})</a>
+{% else %}
+<a href="{% url 'imdb:user-movie-lists' %}" class="fs-3 text-decoration-none">Create your personal lists</a>
+{% endif %}
+{% endif %}
+<hr>
+<h3>Best directors:</h3>
+<div class="row">
+    {% for top_director in top_directors %}
+    <div class="col-2 text-center {% if user in top_director.directors_by_user.all %}favourite-director-item {% endif %}">
+        <img src="{{top_director.photo.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{top_director.get_absolute_url}}">{{top_director}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{top_director.avg_rating}}</p>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'imdb:director-list' %}" class="text-decoration-none">Full directors list</a>
+
+{% endblock %}

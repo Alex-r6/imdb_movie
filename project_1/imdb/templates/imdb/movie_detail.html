@@ -1,0 +1,177 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}{{movie}}{% endblock %}
+
+{% block title2 %} {{object}} <br> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{movie_rating}}
+    {% if user_rating  %}
+        / <i class="fa-solid fa-user"></i> {{user_rating}}
+    {% endif %}
+
+ {% endblock %}
+
+
+
+{% block main %}
+<div class="row">
+    <div class="col-4 {% if user in movie.users_to_watch.all %} watchlist-item {% endif %}">
+        <img src="{{movie.poster.url}}" class="w-75 {% if user in movie.users_to_watch.all %} watchlist-item {% endif %}">
+        <div class="mt-3">
+            {% for genre in movie.genres.all %}
+                <a href="{% url 'imdb:movie-by-genre-view' pk=genre.id %}">{{genre}}</a>
+                <br>
+            {% endfor %}
+        </div>
+        {% if similar_movies %}
+        <div>
+            <p>More like this:</p>
+            {% for similar_movie in similar_movies %}
+                <a href="{{similar_movie.get_absolute_url}}">{{similar_movie}}</a>
+                <br/>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-6">
+        <div class="ratio ratio-16x9">
+            {% video movie.trailer '800x600' %}
+        </div>
+        {% if user.is_authenticated %}
+        <div class="mt-3">
+            <form action="{% url 'imdb:update-watchlist' pk=movie.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-warning"
+                    value="{% if user in movie.users_to_watch.all %}Remove from watchlist{% else %} Add to watchlist{% endif %}" />
+            </form>
+            {% if user.lists.exists %}
+            <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#add_to_personal_list_modal_form">
+                Add to personal list
+            </button>
+            <form action="{% url 'imdb:set-user-rate' pk=movie.id %}" method="post">
+              {% csrf_token %}
+              {{user_rating_form}}
+              <input type="submit" value="Set value" class="btn btn-warning my-2 "/>
+            </form>
+              <div>
+                {% if movie_count_in_lists and movie_count_in_myList %}
+                <p>
+                    This movie is in {{ movie_count_in_lists }} other users' lists and {{ movie_count_in_myList }} your list
+                </p>
+                {% endif %}
+            </div>              
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-2">
+        {% if movie.plot %}
+        <span>{{movie.plot}}</span>
+        {% elif movie.imdb_id %}
+        <span id="movie_plot_api" data-imdb_id="{{movie.imdb_id}}">{{movie.imdb_id}}</span>
+        {% else %}
+        <span>No plot</span>
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-2">
+        <h2>Director:</h2>
+            <div class="col-12 text-center">
+                <img src="{{movie.director.photo.url}}" class="w-75" />
+                <div>
+                    <a href="{{movie.director.get_absolute_url}}" class="text-decoration-none">{{movie.director}}</a>
+                </div>
+            </div>
+    </div>
+    <div class="col-8">
+        <div class="row">
+            <h2>Actors list:</h2>
+            {% for actor in movie.actors.all %}
+            <div class="col-3 text-center">
+                <img src="{{actor.photo.url}}" class="w-100 h-75 object-fit-cover"  alt="{{actor}}">
+                <div>
+                    <a href="{{actor.get_absolute_url}}" class="text-decoration-none">{{actor}}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-5">
+        {% if user.is_authenticated %}
+        <form action="{% url 'imdb:add_new_comment2' pk=movie.id %}" method="post">
+            {% csrf_token %}
+            {{comment_form}}
+            <input class="btn btn-primary mt-3" type="submit" value="Add comment">
+        </form>
+        {% endif %}
+    </div>
+    <div class="col-3"></div>
+    <div class="col-4">
+        {% if movie.comments.exists %}
+        <h3>Comments:</h3>
+        {% for comment in movie.comments.all %}
+        <div>
+            <p>
+                <img src="{{comment.author.profile.img.url}}" width="25" />
+                {{comment.author}}
+                <span class="text-secondary fst-italic">{{comment.created|timesince}}</span>
+            </p>
+            <p>{{comment.text}} </p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="add_to_personal_list_modal_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">add {{movie}} to list</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'imdb:add-movie-to-personal-movie-list' pk=movie.id %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <select class="form-select" aria-label="Default select example" name="list_id">
+                    <option value="" hidden={true}>Choose list</option>
+                    {% for lst in user.lists.all %}
+                    <option value="{{lst.id}}">{{lst.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+{% if user_rating %}
+<script>
+    var value_input = document.getElementById('id_value');
+    value_input.value = {{user_rating.value}};
+</script>
+{% endif %}
+
+{% if not movie.plot and movie.imdb_id %}
+<script>
+    let movie_plot_span = document.getElementById('movie_plot_api');
+    let movie_imdb_id = movie_plot_span.dataset.imdb_id;
+    async function get_api_data(){
+        const url = 'https://www.omdbapi.com/?i=tt7131622&apikey=77e8b441&plot=full';
+        const response = await fetch(url);
+        const data = await response.json();
+        movie_plot_span.innerHTML = data.Plot;
+    }
+    get_api_data()
+</script>
+{% endif %}
+
+{% endblock %}

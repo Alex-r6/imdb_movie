@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="shortcut icon" href="http://google.com/favicon.ico" type="image/x-icon">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Page:</h1>
+        <div class="row" id="root"></div>
+    </div>
+    <script>
+        const api_url = 'http://127.0.0.1:8000/api/single/page/movie/list/'
+        const root = document.getElementById('root')
+        const fetch_movies = async() => {
+            const responce = await fetch(api_url)
+            const data = await responce.json()
+            console.log(data);
+            data.forEach(elem=> {
+                const div = document.createElement('div')
+                const title = document.createElement('p')
+                const actors = document.createElement('p')
+                const photo = document.createElement('img')
+                const genre = document.createElement('p')
+                const user_rated = document.createElement('p')
+                const users_to_watch = document.createElement('p')
+                div.classList.add('col-6')
+                title.classList.add('text-danger')
+                genre.classList.add('text-warning')
+                title.innerHTML = `${elem.title} <br> Date:${elem.date}`
+                photo.src = elem.poster
+                actors.innerHTML = `Actors:${elem.actors.join('<br>')}`
+                genre.innerHTML = `Genres: ${elem.genres.map(g => g.name).join(', ')}`
+                user_rated.innerHTML = `User_rated: ${elem.user_rated_this_movie.join(', ')}`
+                users_to_watch.innerHTML = `Users_to_watch: ${elem.users_to_watch.join('')}`
+                div.appendChild(photo)
+                div.appendChild(title)
+                div.appendChild(actors)
+                div.appendChild(genre)
+                div.appendChild(user_rated)
+                div.appendChild(users_to_watch)
+                root.appendChild(div)
+            })
+        }
+        fetch_movies()
+    </script>
+</body>
+</html>

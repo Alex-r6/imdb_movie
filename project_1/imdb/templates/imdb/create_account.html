@@ -1,0 +1,19 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Add New Account{% endblock %}
+
+{% block title2 %}Add New Account{% endblock %}
+
+
+{% block main %} 
+<div class="row">
+    <div class="col-5">
+        <form action="{% url 'imdb:create-new-account' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ f.as_table }}
+            <input class="btn btn-primary my-2" type="submit" value="Submit" >
+        </form>
+    </div>
+</div>
+
+{% endblock %}

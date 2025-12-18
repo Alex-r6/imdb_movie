@@ -1,0 +1,37 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}Message{% endblock %}
+
+{% block title2 %}Message{% endblock %}
+
+
+{% block main %}
+<div class="row">
+    <div class="col-4">
+        {% if user == message.addressee or user == message.author %}
+        <p>From: {{message.author}}</p>
+        <p>To: {{message.addressee}}</p>
+        <p>Created: {{message.created}}</p>
+        <div class="border rounded p-2">{{message.text|linebreaks}}</div>
+        {% else %}
+        <div class="border rounded p-2"> You don't have permission to read this message</div>
+        {% endif %}
+    </div>
+    <div class="col-6">
+        {% if user == message.addressee %}
+        <p>Reply to {{message.author}} message:</p>
+        <form action="{% url 'imdb:reply-message' %}" method="post">
+            {% csrf_token %}
+            {{reply_form}}
+            <input type="hidden" name="author_id" value="{{message.addressee.id}}">
+            <input type="hidden" name="addressee_id" value="{{message.author.id}}">
+            <input type="submit" class="btn btn-secondary m-2" value="reply">
+        </form>
+        {% endif %}
+    </div>
+    <a href="{% url 'imdb:get-to-message-list' %}">back to message list</a>
+</div>
+
+{% endblock %}

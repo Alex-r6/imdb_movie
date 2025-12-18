@@ -1,0 +1,27 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}Delete movie comment{% endblock %}
+
+{% block title2 %} Delete movie comment {% endblock %}
+
+
+
+{% block main %}
+{% if object.author == user %}
+<h3> Are you sure? </h3>
+<p>{{object.text}}</p>
+<div class="row">
+    <div class="col-3">
+        <form  method="post">
+            {% csrf_token %}
+            <input type="submit" value="delete" class="btn btn-danger mt-2"/>
+        </form>
+    </div>
+</div>
+{% endif %}
+<script>
+    document.getElementById('id_text').classList.add("form-control");
+</script>
+{% endblock %}

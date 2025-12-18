@@ -1,0 +1,33 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Filter movies{% endblock %}
+
+{% block title2 %}Filter movies{% endblock %}
+
+{% block main %} 
+
+<div class="row">
+    <div class="col-2">
+        <form  method="get">
+            {{filter.form}}
+            <input type="submit" value="filter" class="btn btn-warning mt-2">
+        </form>
+
+    </div>
+    <div class="col-10">
+        <div class="row">
+            {% for movie in movies %}
+            <div class="col-3 text-center {% if movie.users_to_watch.all %} watchlist-item {% endif %}">
+                <img src="{{movie.poster.url}}" class="w-75 h-75 object-fit-cover shadow-lg" alt="">
+                <div>
+                    <a href="{{movie.get_absolute_url}}" class="text-decoration-none">{{movie}}</a>
+                </div>
+                <p>{{movie.rating}}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

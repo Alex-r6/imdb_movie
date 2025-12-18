@@ -1,0 +1,60 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}{{current_user}}'s profile{% endblock %}
+
+{% block title2 %} {{current_user}}'s profile {% endblock %}
+
+
+
+{% block main %}
+{% if current_user == user %}
+<div class="row">
+    <div class="col-3">
+        <form  method="post">
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" value="change"/>
+        </form>
+        <a href="{% url 'imdb:show-message-view' %}"><i class="fa-solid fa-message"></i> Create new nessage</a> <br>
+        <a href="{% url 'imdb:message-list-view' %}"><i class="fa-solid fa-comments"></i> Message box({{unread_message_num}})</a>
+    </div>
+    <div class="col-4">
+        <h3>Putted scores:</h3>
+        {% for score in current_user.movie_ratings.all %}
+            <p><img src="{{score.movie.poster.url}}" style="width: 100px; height: auto;"/><a href="{{score.movie.get_absolute_url}}">{{score.movie}}</a> - {{score}}<br> {{score.created|timesince}}</p>
+        {% endfor %}
+    </div>
+    <div class="col-4">
+        <h3>Comments:</h3>
+        {% for comment in current_user.comments.all %}
+        <div class="row">
+            <div class="p-2 m-2 border rounded col-8">
+                <a href="{{comment.movie.get_absolute_url}}">{{comment.movie}}</a>
+                <p>{{comment.text}}</p>
+                <p>{{comment.created}}</p>
+            </div>
+            <div class="col-2">
+                <a href="{% url 'imdb:movie-comment-update-view' pk=comment.id %}">
+                    <i class="fa-solid fa-user-pen"></i>
+                </a>
+                <br>
+                <a href="{% url 'imdb:movie-comment-delete-view' pk=comment.id %}">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endif %}
+
+<script>
+    {% for field in form.fields %}
+    document.getElementById("id_{{ field }}").classList.add("form-control");
+    {% endfor %}
+</script>  
+{% endblock %}

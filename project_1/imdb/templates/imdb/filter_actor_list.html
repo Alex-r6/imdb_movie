@@ -1,0 +1,31 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Filter actors{% endblock %}
+
+{% block title2 %}Filter actors{% endblock %}
+
+{% block main %} 
+<div class="row">
+    <div class="col-2">
+        <form method="get">
+            {{filter.form}}
+            <input type="submit" value="filter" class="btn btn-warning mt-2">
+        </form>
+    </div>
+    <div class="col-10">
+        <div class="row">
+            {% for actor in object_list %}
+            <div class="col-2 text-center {% if actor.actors_by_user.all %}watchlist-item {% endif %}">
+                <img src="{{actor.photo.url}}" class="w-75 h-75 object-fit-cover shadow-lg" alt="">
+                <div>
+                    <!-- <a href="{% url 'imdb:actor-detail' pk=actor.id %}" class="text-decoration-none">{{actor}}</a> -->
+                    <a href="{{actor.get_absolute_url}}" class="text-decoration-none">{{actor}}</a>
+                    <p><span class="text-warning"><i class="fa-solid fa-star"></i></span> {{actor.actor_rating|floatformat:1}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

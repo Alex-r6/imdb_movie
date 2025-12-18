@@ -1,0 +1,21 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Add New Actor{% endblock %}
+
+{% block title2 %}Add New Actor{% endblock %}
+
+
+{% block main %} 
+<div class="row">
+    <div class="col-5">
+        {% if  user.is_authenticated %}
+        <form action="{% url 'imdb:add-new-actor' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ f.as_table }}
+            <input class="btn btn-primary my-2" type="submit" value="Add actor" >
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

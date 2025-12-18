@@ -1,0 +1,46 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}personal lists of {{user}}{% endblock %}
+
+{% block title2 %}personal lists of {{user.get_full_name}}{% endblock %}
+
+
+
+{% block main %}
+{% for lst in movie_list_list %}
+{% if lst.movies.all|length > 0 %}
+<h2>{{ lst }}</h2>
+{% endif %}
+<div class="row">
+    {% for movie in lst.movies.all %}
+    <div class="col-2">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 170px; text-align: center; border: 1px solid #ddd; border-radius: 8px;">
+            <img src="{{ movie.poster.url }}" style="width: 100%; height: auto; border-radius: 8px;">
+            <a href="{{ movie.get_absolute_url }}" style="text-decoration: none;">{{ movie.title }}</a>
+            
+            <form action="{% url 'imdb:remove-movie-from-personal-movie-list' pk1=movie.id pk2=lst.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" style="margin-top: 8px; ">
+                    <i class="fa-solid fa-trash-can"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+<div class="row my-3">
+    <div class="col-4">
+        <p>Create your personal movie list</p>
+        <form action="{% url 'imdb:add-personal-movie-list' %}" method="post">
+            {% csrf_token %}
+            {{form}}
+            <div class="my-3">
+                <input type="submit" class="btn btn-warning" value="Add list">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

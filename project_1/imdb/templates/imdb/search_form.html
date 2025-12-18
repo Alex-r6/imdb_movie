@@ -1,0 +1,11 @@
+<form action="{% url 'imdb:search' %}" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-9">
+           {{search_form}}
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-outline-warning"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,24 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Movies by genre{% endblock %}
+
+{% block title2 %}Movies by {{genre}}{% endblock %}
+
+{% block main %}
+<div class="row">
+    {% if movies_by_genre %}
+    {% for movie in movies_by_genre %}
+    <div class="col-2 text-center {% if user in top_actor.actors_by_user.all %}favourite-actor-item {% endif %}">
+        <img src="{{movie.poster.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{movie.get_absolute_url}}">{{movie}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{movie.rating|floatformat:1 }}
+        </p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No more movies in this genre</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}

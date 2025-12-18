@@ -1,0 +1,26 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}Update movie comment{% endblock %}
+
+{% block title2 %} Update movie comment {% endblock %}
+
+
+
+{% block main %}
+{% if object.author == user %}
+<div class="row">
+    <div class="col-3">
+        <form  method="post">
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" value="change" class="btn btn-danger mt-2"/>
+        </form>
+    </div>
+</div>
+{% endif %}
+<script>
+    document.getElementById('id_text').classList.add("form-control");
+</script>
+{% endblock %}

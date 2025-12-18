@@ -1,0 +1,57 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}search{% endblock %}
+
+{% block title2 %}search by '{{pattern}}'{% endblock %}
+
+
+
+{% block main %}
+{% if movie_list|length %}
+<h2>Found movies: {{movie_list|length}}</h2>
+{% endif %}
+{% if movie_list.exists %}
+<div class="row">
+    {% for movie in movie_list %}
+    <div class="col-2 text-center {% if user in movie.users_to_watch.all %} watchlist-item {% endif %}">
+        <img src="{{movie.poster.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{movie.get_absolute_url}}">{{movie}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{movie.rating}}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<br>
+{% if actor_list|length %}
+<h2>Found actors: {{actor_list|length}}</h2>
+{% endif %}
+{% if actor_list.exists %}
+<div class="row">
+    {% for actor in actor_list %}
+    <div class="col-2 text-center {% if user in actor.actors_by_user.all %}favourite-actor-item {% endif %}">
+        <img src="{{actor.photo.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{actor.get_absolute_url}}">{{actor}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{actor.avg_rating|floatformat:1}}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<br>
+{% if director_list|length %}
+<h2>Found directors: {{director_list|length}}</h2>
+{% endif %}
+{% if director_list.exists %}
+<div class="row">
+    {% for director in director_list  %}
+    <div class="col-2 text-center {% if user in director.directors_by_user.all %}favourite-director-item {% endif %}">
+        <img src="{{director.photo.url}}" class="w-100 h-75 object-fit-cover" />
+        <a href="{{director.get_absolute_url}}">{{director}}</a>
+        <p> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{director.avg_rating}}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+{% endblock %}

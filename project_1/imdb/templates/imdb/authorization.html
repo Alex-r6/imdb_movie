@@ -1,0 +1,25 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}Authorization{% endblock %}
+
+{% block title2 %}Authorization{% endblock %}
+
+{% block main %} 
+<div class="row">
+    <div class="col-4">
+        <form action="{% url 'imdb:user-sign-in' %}" method="post">
+            {% csrf_token %}
+            <div class="my-2">
+                <input type="text" name="username" placeholder="username" class="form-control">
+            </div>
+            <div class="my-2">
+                <input type="password" name="password" placeholder="password" class="form-control">
+            </div>
+            <div class="my-2">
+                <input type="submit" value="sign in" class="btn btn-danger"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

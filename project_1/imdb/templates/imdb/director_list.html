@@ -1,0 +1,41 @@
+{% extends 'imdb/base.html' %}
+
+{% block title %}All Directors{% endblock %}
+
+{% block title2 %}All Directors{% endblock %}
+
+{% block main %} 
+<div class="row">
+    {% for director in directors %}
+    <div class="col-2 text-center {% if user in director.directors_by_user.all %}favourite-director-item {% endif %}">
+        <img src="{{director.photo.url}}" class="w-75 h-75 object-fit-cover shadow-lg" alt="">
+        <div>
+            <a href="{{director.get_absolute_url}}" class="text-decoration-none"> {{director}}</a>
+            <p><span class="text-warning"><i class="fa-solid fa-star"></i></span> {{director.avg_rating}} <br> movies: {{director.num_movies}}            </p>
+            <!-- <code>movies: {{director.num_movies}}</code> -->
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+<div class="row">
+    <div class="col-4">
+        {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    </div>
+    <div class="col-4 text-center">
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+    </div>
+    <div class="col-4 text-end">
+        {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+    </div>
+</div>
+
+{% endblock %}

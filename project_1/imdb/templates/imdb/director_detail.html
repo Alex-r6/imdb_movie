@@ -1,0 +1,68 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}{{director}}{% endblock %}
+
+{% block title2 %}{{director}} <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{director_rating}}{% endblock %}
+
+
+
+{% block main %} 
+<div class="row">
+    <div class="col-3">
+        <img src="{{director.photo.url}}"  class="w-75" alt="">
+        <p>Born: {{director.birth_date}}</p>
+    </div>
+    <div class="col-6">
+        <div class="ratio ratio-16x9">
+            {% video director_trailer '800x600' %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        {% for movie in director_movies %}
+            <div class="row my-2">
+                <div class="col-2">
+                    <img src="{{movie.poster.url}}" class="w-75"/>
+                </div>
+                <div class="col-6">
+                    <a href="{{movie.get_absolute_url}}" class="text-decoration-none">{{movie}}</a>
+                </div>
+                <div class="col-4">
+                    <h2> <span class="text-warning"><i class="fa-solid fa-star"></i></span> {{movie.rating}}</h2>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="col-6"></div>
+</div>
+<div class="row">
+    <div class="col-5">
+        {% if  user.is_authenticated %}
+        <form action="{% url 'imdb:add-director-comment' pk=director.id %}" method="post">
+            {% csrf_token %}
+            {{director_comment}}
+            <input class="btn btn-primary mt-3" type="submit" value="Add comment">
+        </form>
+        {% endif %}
+    </div>
+    <div class="col-6">
+        {% if director.comments.exists %}
+        <h3>Comments:</h3>
+        {% for comment in director.comments.all %}
+            <div>
+                <p>
+                    <img src="{{comment.author.profile.img.url}}" width="25"/>
+                    {{comment.author}} 
+                <span class="text-secondary fst-italic">{{comment.created|timesince}}</span></p>
+                <p>{{comment.text}} </p>
+            </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

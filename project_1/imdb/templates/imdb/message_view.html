@@ -1,0 +1,20 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}make message{% endblock %}
+
+{% block title2 %}Make your message {% endblock %}
+
+
+{% block main %}
+<div class="row">
+    <div class="col-3">
+        <form action="{% url 'imdb:send-message' %}" method="post">
+            {% csrf_token %}
+            {{message_form}} 
+            <input type="submit" value="send" class="btn btn-danger mt-2"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

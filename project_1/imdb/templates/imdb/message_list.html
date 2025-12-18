@@ -1,0 +1,37 @@
+{% extends 'imdb/base.html' %}
+
+{% load embed_video_tags %}
+
+{% block title %}Messages{% endblock %}
+
+{% block title2 %}Messages{% endblock %}
+
+
+{% block main %}
+<div class="row">
+    <div class="col-5">
+        {% if income_message_list %}
+        <h2>Income messages:</h2>
+        {% for message in income_message_list %}
+        <div class="border rounded col-8 mt-2 p-2">
+            <a href="{% url 'imdb:message-detail-view' pk=message.id %}"
+                class="{% if message.is_read  %}text-secondary{% else %}text-primary{% endif %}">From:
+                {{message.author}} Created: {{message.created}}</a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h3>No new messages</h3>
+        {% endif %}
+    </div>
+    <div class="col-5">
+        <h2>Send messages:</h2>
+        {% for message in sent_message_list %}
+        <div class="border rounded col-8 mt-2 p-2">
+            <a href="{% url 'imdb:message-detail-view' pk=message.id %}"
+                class="{% if message.is_read  %}text-secondary{% else %}text-primary{% endif %}">To:
+                {{message.addressee}} Created: {{message.created}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
