@@ -25,3 +25,15 @@ git clone https://github.com/Alex-r6/imdb_movie.git
 cd imdb_movie
 2. Run the application:
 python main.py
+
+Technologies
+
+Python
+
+HTML
+
+CSS
+
+Description
+
+This project is designed for learning how to work with Python and web technologies. It allows you to create a simple movie catalog with the ability to add and display movie information.
